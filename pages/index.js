@@ -11,7 +11,7 @@ export default function Home() {
   const [userName, setUserName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [lastSelectedSide, setLastSelectedSide] = useState(null); // Initially, no side is selected
-
+  const [clickedMessage, setClickedMessage] = useState('');
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -52,6 +52,13 @@ export default function Home() {
     if (newIndex >= images.length) {
       setIsTestCompleted(true);
     }
+      // Show a click confirmation message
+    const clickedSide = clickedIndex === leftImageIndex ? 'left' : 'right';
+    setClickedMessage(`You clicked the image on the ${clickedSide}.`);
+
+      // Clear the message after 2 seconds
+    setTimeout(() => setClickedMessage(''), 2000);
+ 
   };
 
   const sendTestResult = async () => {
@@ -104,12 +111,38 @@ export default function Home() {
     );
   }
 
+  if (!isTestStarted) {
+    return (
+      <div className="name-input-container">
+        <h1>Welcome to the CORH A/B Test</h1>
+        <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Enter your name" />
+        <button onClick={startTest}>Start</button>
+        {/* Display a loading message or progress indicator here if desired */}
+      </div>
+    );
+  }
+
   return (
     <div className="test-container">
       {isTestStarted && !isTestCompleted && (
         <>
           <div className="header">
             <h1>Which image do you prefer?</h1>
+            {/* Render the clickedMessage here */}
+            {clickedMessage && (
+  <div style={{
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    zIndex: 1000
+  }}>
+    {clickedMessage}
+  </div>
+)}
           </div>
           <div className="image-container" style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div className="image-wrapper" onClick={() => handleImageClick(leftImageIndex)}>
@@ -133,4 +166,5 @@ export default function Home() {
       )}
     </div>
   );
+  
 }
