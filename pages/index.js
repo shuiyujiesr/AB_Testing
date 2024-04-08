@@ -164,12 +164,12 @@ export default function Home() {
           </div>
           <div className="image-container" style={{ display: 'flex', justifyContent: 'space-around' }}>
             <div className="image-wrapper" onClick={() => handleImageClick(leftImageIndex)}>
-              <Image src={`/images/${images[leftImageIndex]}`} alt="Left Image" width={1500} height={900} />
+              <Image src={`/images/${images[leftImageIndex]}`} alt="Left Image" width={1500} height={900} priority/>
               <p>{`Image ${leftImageIndex}`}</p>
             </div>
             {rightImageIndex < images.length && (
               <div className="image-wrapper" onClick={() => handleImageClick(rightImageIndex)}>
-                <Image src={`/images/${images[rightImageIndex]}`} alt="Right Image" width={1500} height={900} />
+                <Image src={`/images/${images[rightImageIndex]}`} alt="Right Image" width={1500} height={900} priority/>
                 <p>{`Image ${rightImageIndex}`}</p>
               </div>
             )}
