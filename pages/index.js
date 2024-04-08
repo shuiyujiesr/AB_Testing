@@ -92,9 +92,10 @@ export default function Home() {
   // Call sendTestResult when the test is completed
   useEffect(() => {
     if (isTestCompleted) {
-      sendTestResult();
+      sendTestResult(); // Existing function to handle results
+      sendEmailResult(); // New function to send the email
     }
-  }, [isTestCompleted, userName, leftImageIndex, rightImageIndex, images]);
+  }, [isTestCompleted, userName, leftImageIndex, rightImageIndex, images, lastSelectedSide]);
 
 
   if (isLoading) {
@@ -107,20 +108,37 @@ export default function Home() {
         <h1>Welcome to the CORH A/B Test</h1>
         <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Enter your name" />
         <button onClick={startTest}>Start</button>
-      </div>
-    );
-  }
-
-  if (!isTestStarted) {
-    return (
-      <div className="name-input-container">
-        <h1>Welcome to the CORH A/B Test</h1>
-        <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Enter your name" />
-        <button onClick={startTest}>Start</button>
         {/* Display a loading message or progress indicator here if desired */}
       </div>
     );
   }
+
+  const sendEmailResult = async () => {
+    if (!isTestCompleted || !userName || lastSelectedSide === null) return;
+  
+    const selectedImageIndex = lastSelectedSide === 'left' ? leftImageIndex : rightImageIndex;
+    const selectedImagePath = images[selectedImageIndex];
+  
+    try {
+      const response = await fetch('/api/sendEmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userName, selectedImagePath }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Email sent successfully:', data.status);
+      } else {
+        console.error('Error sending email:', data.status);
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
+  
 
   return (
     <div className="test-container">
